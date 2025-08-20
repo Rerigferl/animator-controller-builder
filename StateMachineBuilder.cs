@@ -43,7 +43,7 @@ internal sealed class StateMachineBuilder
 
     public AnimatorStateMachine ToAnimatorStateMachine(IAssetContainer container)
     {
-        if (!container.TryGetValue(this, out AnimatorStateMachine stateMachine))
+        if (!container.TryGetValue(this, out AnimatorStateMachine? stateMachine))
         {
             stateMachine = new AnimatorStateMachine();
             container.Register(this, stateMachine);

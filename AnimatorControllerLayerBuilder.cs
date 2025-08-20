@@ -10,7 +10,7 @@ internal sealed class AnimatorControllerLayerBuilder
 
     public AnimatorControllerLayer ToAnimatorControllerLayer(IAssetContainer container)
     {
-        if (!container.TryGetValue(this, out AnimatorControllerLayer layer))
+        if (!container.TryGetValue(this, out AnimatorControllerLayer? layer))
         {
             layer = new AnimatorControllerLayer();
             container.Register(this, layer);

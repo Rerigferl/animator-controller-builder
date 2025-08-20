@@ -19,7 +19,7 @@ internal abstract class StateMachineBehaviourBuilder
 
     public StateMachineBehaviour ToStateMachineBehaviour(IAssetContainer container)
     {
-        if (!container.TryGetValue(this, out StateMachineBehaviour behaviour))
+        if (!container.TryGetValue(this, out StateMachineBehaviour? behaviour))
         {
             behaviour = CreateInstance();
             container.Register(this, behaviour);

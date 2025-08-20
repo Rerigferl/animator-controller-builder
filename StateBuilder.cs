@@ -30,7 +30,7 @@ internal sealed class StateBuilder
 
     public ChildAnimatorState ToAnimatorState(IAssetContainer container)
     {
-        if (!container.TryGetValue(this, out AnimatorState state))
+        if (!container.TryGetValue(this, out AnimatorState? state))
         {
             state = new AnimatorState();
             container.Register(this, state);

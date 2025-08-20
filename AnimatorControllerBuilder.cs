@@ -24,15 +24,14 @@ internal sealed class AnimatorControllerBuilder
 
     public AnimatorController ToAnimatorController(IAssetContainer container)
     {
-        if (container.TryGetValue(this, out AnimatorController controller))
+        if (!container.TryGetValue(this, out AnimatorController? controller))
         {
-            return controller;
+            controller = new AnimatorController();
+            container.Register(this, controller);
+            controller.name = Name;
+            controller.parameters = Parameters.ToArray();
+            controller.layers = Layers.Select(layer => layer.ToAnimatorControllerLayer(container)).ToArray();
         }
-        controller = new AnimatorController();
-        container.Register(this, controller);
-        controller.name = Name;
-        controller.parameters = Parameters.ToArray();
-        controller.layers = Layers.Select(layer => layer.ToAnimatorControllerLayer(container)).ToArray();
         return controller;
     }
 

@@ -11,7 +11,7 @@ internal sealed class AssetContainer : IAssetContainer
     public void Register(object key, object value)
         => Items.TryAdd(key, value);
 
-    public bool TryGetValue<T>(object key, [NotNullWhen(true)] out T value) where T : class
+    public bool TryGetValue<T>(object key, [NotNullWhen(true)] out T? value) where T : class
     {
         if (Items.TryGetValue(key, out var v) && v is T val)
         {
@@ -27,5 +27,5 @@ internal interface IAssetContainer
 {
     public void Register(object key, object value);
 
-    public bool TryGetValue<T>(object key, [NotNullWhen(true)] out T value) where T : class;
+    public bool TryGetValue<T>(object key, [NotNullWhen(true)] out T? value) where T : class;
 }

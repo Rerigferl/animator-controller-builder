@@ -40,7 +40,7 @@ internal sealed class TransitionBuilder
 
     internal AnimatorStateTransition ToAnimatorStateTransition(IAssetContainer container)
     {
-        if (!container.TryGetValue(this, out AnimatorStateTransition tr))
+        if (!container.TryGetValue(this, out AnimatorStateTransition? tr))
         {
             tr = new AnimatorStateTransition();
             container.Register(this, tr);
