@@ -41,17 +41,17 @@ internal sealed class StateMachineBuilder
         return t;
     }
 
-    public AnimatorStateMachine Build(IAssetContainer container)
+    public AnimatorStateMachine ToAnimatorStateMachine(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out AnimatorStateMachine stateMachine))
         {
             stateMachine = new AnimatorStateMachine();
             container.Register(this, stateMachine);
             stateMachine.name = Name;
-            stateMachine.states = States.Select(x => x.Build(container)).ToArray();
+            stateMachine.states = States.Select(x => x.ToAnimatorState(container)).ToArray();
             stateMachine.entryPosition = EntryPosition;
             stateMachine.exitPosition = ExitPosition;
-            stateMachine.anyStateTransitions = AnyStateTransitions.Select(x => x.Build(container)).ToArray();
+            stateMachine.anyStateTransitions = AnyStateTransitions.Select(x => x.ToAnimatorStateTransition(container)).ToArray();
         }
         return stateMachine;
     }

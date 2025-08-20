@@ -17,7 +17,7 @@ internal abstract class StateMachineBehaviourBuilder
 
     private static readonly Action<AnimatorState, ScriptableObject[]> setBehaviours;
 
-    public StateMachineBehaviour Build(IAssetContainer container)
+    public StateMachineBehaviour ToStateMachineBehaviour(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out StateMachineBehaviour behaviour))
         {

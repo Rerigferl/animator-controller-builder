@@ -38,14 +38,14 @@ internal sealed class TransitionBuilder
         return this;
     }
 
-    internal AnimatorStateTransition Build(IAssetContainer container)
+    internal AnimatorStateTransition ToAnimatorStateTransition(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out AnimatorStateTransition tr))
         {
             tr = new AnimatorStateTransition();
             container.Register(this, tr);
             tr.canTransitionToSelf = false;
-            tr.destinationState = Destination?.Build(container).state;
+            tr.destinationState = Destination?.ToAnimatorState(container).state;
             tr.duration = Duration;
             tr.hasExitTime = ExitTime.HasValue;
             tr.exitTime = ExitTime ?? 0;

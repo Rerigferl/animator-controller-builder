@@ -28,7 +28,7 @@ internal sealed class StateBuilder
         return t;
     }
 
-    public ChildAnimatorState Build(IAssetContainer container)
+    public ChildAnimatorState ToAnimatorState(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out AnimatorState state))
         {
@@ -37,8 +37,8 @@ internal sealed class StateBuilder
             state.name = Name;
             state.motion = Motion;
             state.writeDefaultValues = WriteDefaults;
-            state.transitions = Transitions.Select(x => x.Build(container)).ToArray();
-            var behaviours = Behaviours.Select(x => x.Build(container)).ToArray();
+            state.transitions = Transitions.Select(x => x.ToAnimatorStateTransition(container)).ToArray();
+            var behaviours = Behaviours.Select(x => x.ToStateMachineBehaviour(container)).ToArray();
             StateMachineBehaviourBuilder.SetBehaviours(state, behaviours);
         }
         return new()

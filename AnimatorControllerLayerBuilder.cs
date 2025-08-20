@@ -8,7 +8,7 @@ internal sealed class AnimatorControllerLayerBuilder
 
     public float Weight { get; set; } = 1;
 
-    public AnimatorControllerLayer Build(IAssetContainer container)
+    public AnimatorControllerLayer ToAnimatorControllerLayer(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out AnimatorControllerLayer layer))
         {
@@ -16,7 +16,7 @@ internal sealed class AnimatorControllerLayerBuilder
             container.Register(this, layer);
             layer.name = Name;
             layer.defaultWeight = Weight;
-            layer.stateMachine = StateMachine.Build(container);
+            layer.stateMachine = StateMachine.ToAnimatorStateMachine(container);
         }
         return layer;
     }

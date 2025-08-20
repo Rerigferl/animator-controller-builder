@@ -32,7 +32,7 @@ internal sealed class AnimatorControllerBuilder
         container.Register(this, controller);
         controller.name = Name;
         controller.parameters = Parameters.ToArray();
-        controller.layers = Layers.Select(layer => layer.Build(container)).ToArray();
+        controller.layers = Layers.Select(layer => layer.ToAnimatorControllerLayer(container)).ToArray();
         return controller;
     }
 
