@@ -1,14 +1,15 @@
-﻿namespace Numeira.AnimatorController;
+﻿namespace Numeira.Animation;
 
 internal sealed class StateBuilder
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
     public Vector2? Position { get; set; }
-    public Motion Motion { get; set; }
+    public Motion? Motion { get; set; }
     public bool WriteDefaults { get; set; }
 
-    public List<TransitionBuilder> Transitions = new();
-    public List<StateMachineBehaviourBuilder> Behaviours = new();
+    public List<TransitionBuilder> Transitions { get; } = new();
+
+    public List<StateMachineBehaviourBuilder> Behaviours { get; } = new();
 
     public TransitionBuilder AddTransition(StateBuilder destination)
     {
@@ -19,6 +20,7 @@ internal sealed class StateBuilder
         Transitions.Add(t);
         return t;
     }
+
     public TransitionBuilder AddExitTransition()
     {
         var t = new TransitionBuilder(true);
@@ -26,14 +28,7 @@ internal sealed class StateBuilder
         return t;
     }
 
-    public AvatarParameterDriverBuilder AddAvatarParameterDriver()
-    {
-        var b = new AvatarParameterDriverBuilder();
-        Behaviours.Add(b);
-        return b;
-    }
-
-    public ChildAnimatorState Build(AssetCacheContainer container)
+    public ChildAnimatorState Build(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out AnimatorState state))
         {
@@ -53,3 +48,5 @@ internal sealed class StateBuilder
         };
     }
 }
+
+internal static partial class StateBuilderExt { }

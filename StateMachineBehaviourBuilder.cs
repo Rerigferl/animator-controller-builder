@@ -1,6 +1,6 @@
 ﻿using System.Reflection.Emit;
 
-namespace Numeira.AnimatorController;
+namespace Numeira.Animation;
 
 internal abstract class StateMachineBehaviourBuilder
 {
@@ -12,12 +12,12 @@ internal abstract class StateMachineBehaviourBuilder
         il.Emit(OpCodes.Ldarg_1);
         il.Emit(OpCodes.Call, typeof(AnimatorState).GetProperty("behaviours_Internal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetMethod);
         il.Emit(OpCodes.Ret);
-        setBehaviours = method.CreateDelegate(typeof(Action<AnimatorState, ScriptableObject[]>)) as Action<AnimatorState, ScriptableObject[]>;
+        setBehaviours = (method.CreateDelegate(typeof(Action<AnimatorState, ScriptableObject[]>)) as Action<AnimatorState, ScriptableObject[]>)!;
     }
 
     private static readonly Action<AnimatorState, ScriptableObject[]> setBehaviours;
 
-    public StateMachineBehaviour Build(AssetCacheContainer container)
+    public StateMachineBehaviour Build(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out StateMachineBehaviour behaviour))
         {
@@ -29,6 +29,7 @@ internal abstract class StateMachineBehaviourBuilder
     }
 
     protected abstract StateMachineBehaviour CreateInstance();
+
     protected abstract void SetupBehaviour(StateMachineBehaviour behaviour);
 
     public static void SetBehaviours(AnimatorState state, StateMachineBehaviour[] behaviours) => setBehaviours(state, System.Runtime.CompilerServices.Unsafe.As<ScriptableObject[]>(behaviours));

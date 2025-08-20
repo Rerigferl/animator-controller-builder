@@ -1,12 +1,14 @@
-﻿namespace Numeira.AnimatorController;
+﻿namespace Numeira.Animation;
 
 internal sealed class AnimatorControllerLayerBuilder
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
+
     public StateMachineBuilder StateMachine { get; set; } = new();
+
     public float Weight { get; set; } = 1;
 
-    public AnimatorControllerLayer Build(AssetCacheContainer container)
+    public AnimatorControllerLayer Build(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out AnimatorControllerLayer layer))
         {

@@ -1,13 +1,13 @@
-﻿namespace Numeira.AnimatorController;
+﻿namespace Numeira.Animation;
 
 internal sealed class StateMachineBuilder
 {
     public List<StateBuilder> States { get; } = new();
     public List<TransitionBuilder> AnyStateTransitions { get; } = new();
 
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
     public bool DefaultWriteDefaults { get; set; } = true;
-    public Motion DefaultMotion { get; set; }
+    public Motion? DefaultMotion { get; set; }
 
     public Vector2 EntryPosition { get; set; } = new(50, 120);
     public Vector2 ExitPosition { get; set; } = new(800, 120);
@@ -41,7 +41,7 @@ internal sealed class StateMachineBuilder
         return t;
     }
 
-    public AnimatorStateMachine Build(AssetCacheContainer container)
+    public AnimatorStateMachine Build(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out AnimatorStateMachine stateMachine))
         {

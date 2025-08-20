@@ -1,4 +1,4 @@
-﻿namespace Numeira.AnimatorController;
+﻿namespace Numeira.Animation;
 
 internal sealed class TransitionBuilder
 {
@@ -9,19 +9,15 @@ internal sealed class TransitionBuilder
 
     private bool IsExitTransition { get; set; }
 
-    public StateBuilder Destination { get; set; }
+    public StateBuilder? Destination { get; set; }
+
     public float? ExitTime { get; set; }
+
     public float Duration { get; set; }
+
     public bool FixedDuration { get; set; } = true;
 
     public List<AnimatorCondition> Conditions { get; } = new();
-
-    public TransitionBuilder If(string parameter) => AddCondition(AnimatorConditionMode.If, parameter, 0);
-    public TransitionBuilder IfNot(string parameter) => AddCondition(AnimatorConditionMode.IfNot, parameter, 0);
-    public TransitionBuilder Equals(string parameter, float value) => AddCondition(AnimatorConditionMode.Equals, parameter, value);
-    public TransitionBuilder NotEqual(string parameter, float value) => AddCondition(AnimatorConditionMode.NotEqual, parameter, value);
-    public TransitionBuilder Greater(string parameter, float value) => AddCondition(AnimatorConditionMode.Greater, parameter, value);
-    public TransitionBuilder Less(string parameter, float value) => AddCondition(AnimatorConditionMode.Less, parameter, value);
 
     public TransitionBuilder AddCondition(AnimatorConditionMode mode, string parameter, float threshold)
     {
@@ -42,7 +38,7 @@ internal sealed class TransitionBuilder
         return this;
     }
 
-    internal AnimatorStateTransition Build(AssetCacheContainer container)
+    internal AnimatorStateTransition Build(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out AnimatorStateTransition tr))
         {
@@ -59,4 +55,19 @@ internal sealed class TransitionBuilder
         }
         return tr;
     }
+}
+
+internal static partial class TransitionBuilderExt
+{
+    public static TransitionBuilder If(this TransitionBuilder transition, string parameter) => transition.AddCondition(AnimatorConditionMode.If, parameter, 0);
+
+    public static TransitionBuilder IfNot(this TransitionBuilder transition, string parameter) => transition.AddCondition(AnimatorConditionMode.IfNot, parameter, 0);
+
+    public static TransitionBuilder Equals(this TransitionBuilder transition, string parameter, float value) => transition.AddCondition(AnimatorConditionMode.Equals, parameter, value);
+
+    public static TransitionBuilder NotEqual(this TransitionBuilder transition, string parameter, float value) => transition.AddCondition(AnimatorConditionMode.NotEqual, parameter, value);
+
+    public static TransitionBuilder Greater(this TransitionBuilder transition, string parameter, float value) => transition.AddCondition(AnimatorConditionMode.Greater, parameter, value);
+
+    public static TransitionBuilder Less(this TransitionBuilder transition, string parameter, float value) => transition.AddCondition(AnimatorConditionMode.Less, parameter, value);
 }

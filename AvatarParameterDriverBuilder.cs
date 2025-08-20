@@ -1,8 +1,9 @@
-﻿using VRC.SDKBase;
+﻿#if VRC_SDK_VRCSDK3
+using VRC.SDKBase;
 using AvatarParameterDriver = VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver;
 using AvatarParameterDriverParameter = VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver.Parameter;
 
-namespace Numeira.AnimatorController;
+namespace Numeira.Animation;
 
 internal sealed class AvatarParameterDriverBuilder : StateMachineBehaviourBuilder
 {
@@ -28,8 +29,19 @@ internal sealed class AvatarParameterDriverBuilder : StateMachineBehaviourBuilde
 
     protected override void SetupBehaviour(StateMachineBehaviour behaviour)
     {
-        var dr = behaviour as AvatarParameterDriver;
+        var dr = (behaviour as AvatarParameterDriver)!;
 
         dr.parameters = Parameters;
     }
 }
+
+static partial class StateBuilderExt
+{
+    public static AvatarParameterDriverBuilder AddAvatarParameterDriver(this StateBuilder state)
+    {
+        var b = new AvatarParameterDriverBuilder();
+        state.Behaviours.Add(b);
+        return b;
+    }
+}
+#endif
