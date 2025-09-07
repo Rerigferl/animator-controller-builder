@@ -10,9 +10,8 @@ internal sealed class AnimatorControllerBuilder
 
     public AnimatorControllerLayerBuilder AddLayer(string name)
     {
-        var layer = new AnimatorControllerLayerBuilder();
+        var layer = new AnimatorControllerLayerBuilder(name);
         Layers.Add(layer);
-        layer.Name = name;
         return layer;
     }
 
@@ -33,6 +32,32 @@ internal sealed class AnimatorControllerBuilder
             controller.layers = Layers.Select(layer => layer.ToAnimatorControllerLayer(container)).ToArray();
         }
         return controller;
+    }
+
+    public AnimatorController ToAnimatorController(AnimatorController baseAnimatorController, IAssetContainer container)
+    {
+        AnimatorControllerLayer[] layers; 
+        if (!container.TryGetValue(this, out AnimatorController? controller))
+        {
+            controller = new AnimatorController();
+            container.Register(this, controller);
+            controller.name = Name;
+            controller.parameters = Parameters.ToArray();
+            layers = Layers.Select(layer => layer.ToAnimatorControllerLayer(container)).ToArray();
+            controller.layers = layers;
+        }
+        else
+        {
+            layers = controller.layers;
+        }
+
+        var baseLayers = baseAnimatorController.layers;
+        int count = baseLayers.Length;
+        Array.Resize(ref baseLayers, count + layers.Length);
+        layers.AsSpan().CopyTo(baseLayers.AsSpan(count));
+
+        baseAnimatorController.layers = baseLayers;
+        return baseAnimatorController;
     }
 
     private sealed class NameEqualityComparer : IEqualityComparer<AnimatorControllerParameter>

@@ -1,6 +1,6 @@
 ﻿namespace Numeira.Animation;
 
-internal sealed class StateBuilder
+internal sealed class StateBuilder : IStateMachineItem
 {
     public string Name { get; set; } = "";
     public Vector2? Position { get; set; }
@@ -11,7 +11,7 @@ internal sealed class StateBuilder
 
     public List<StateMachineBehaviourBuilder> Behaviours { get; } = new();
 
-    public TransitionBuilder AddTransition(StateBuilder destination)
+    public TransitionBuilder AddTransition(IStateMachineItem destination)
     {
         var t = new TransitionBuilder()
         {
@@ -43,7 +43,7 @@ internal sealed class StateBuilder
         }
         return new()
         {
-            position = Position ?? Vector3.zero,
+            position = Position ?? new Vector2(200f, 0),
             state = state,
         };
     }

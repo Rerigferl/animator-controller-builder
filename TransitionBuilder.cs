@@ -9,7 +9,7 @@ internal sealed class TransitionBuilder
 
     private bool IsExitTransition { get; set; }
 
-    public StateBuilder? Destination { get; set; }
+    public IStateMachineItem? Destination { get; set; }
 
     public float? ExitTime { get; set; }
 
@@ -18,6 +18,8 @@ internal sealed class TransitionBuilder
     public bool FixedDuration { get; set; } = true;
 
     public List<AnimatorCondition> Conditions { get; } = new();
+
+    public bool CanTransitionSelf { get; set; } = false;
 
     public TransitionBuilder AddCondition(AnimatorConditionMode mode, string parameter, float threshold)
     {
@@ -38,14 +40,39 @@ internal sealed class TransitionBuilder
         return this;
     }
 
+    public TransitionBuilder WithCanTransitionSelf(bool value)
+    {
+        CanTransitionSelf = value;
+        return this;
+    }
+
+    internal AnimatorTransition ToAnimatorTransition(IAssetContainer container)
+    {
+        if (!container.TryGetValue(this, out AnimatorTransition? tr))
+        {
+            tr = new AnimatorTransition();
+            container.Register(this, tr);
+            if (Destination is StateBuilder sb)
+                tr.destinationState = sb.ToAnimatorState(container).state;
+            else if (Destination is StateMachineBuilder smb)
+                tr.destinationStateMachine = smb.ToAnimatorStateMachine(container);
+            tr.conditions = Conditions.ToArray();
+            tr.isExit = IsExitTransition;
+        }
+        return tr;
+    }
+
     internal AnimatorStateTransition ToAnimatorStateTransition(IAssetContainer container)
     {
         if (!container.TryGetValue(this, out AnimatorStateTransition? tr))
         {
             tr = new AnimatorStateTransition();
             container.Register(this, tr);
-            tr.canTransitionToSelf = false;
-            tr.destinationState = Destination?.ToAnimatorState(container).state;
+            tr.canTransitionToSelf = CanTransitionSelf;
+            if (Destination is StateBuilder sb)
+                tr.destinationState = sb.ToAnimatorState(container).state;
+            else if (Destination is StateMachineBuilder smb)
+                tr.destinationStateMachine = smb.ToAnimatorStateMachine(container);
             tr.duration = Duration;
             tr.hasExitTime = ExitTime.HasValue;
             tr.exitTime = ExitTime ?? 0;
