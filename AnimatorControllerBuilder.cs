@@ -63,10 +63,10 @@ internal sealed class AnimatorControllerBuilder
     private sealed class NameEqualityComparer : IEqualityComparer<AnimatorControllerParameter>
     {
         public bool Equals(AnimatorControllerParameter x, AnimatorControllerParameter y)
-            => x.name.Equals(y.name, StringComparison.OrdinalIgnoreCase);
+            => (x.name ?? "").Equals((y.name ?? ""), StringComparison.OrdinalIgnoreCase);
 
         public int GetHashCode(AnimatorControllerParameter obj)
-            => obj.name.GetHashCode(StringComparison.OrdinalIgnoreCase);
+            => (obj.name ?? "").GetHashCode(StringComparison.OrdinalIgnoreCase);
     }
 }
 

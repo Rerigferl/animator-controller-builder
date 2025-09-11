@@ -4,8 +4,9 @@ internal sealed class StateBuilder : IStateMachineItem
 {
     public string Name { get; set; } = "";
     public Vector2? Position { get; set; }
-    public Motion? Motion { get; set; }
+    public MotionBuilder? Motion { get; set; }
     public bool WriteDefaults { get; set; }
+    public string? MotionTime { get; set; } = null;
 
     public List<TransitionBuilder> Transitions { get; } = new();
 
@@ -35,7 +36,9 @@ internal sealed class StateBuilder : IStateMachineItem
             state = new AnimatorState();
             container.Register(this, state);
             state.name = Name;
-            state.motion = Motion;
+            state.motion = Motion?.ToMotion(container);
+            state.timeParameter = MotionTime;
+            state.timeParameterActive = MotionTime is not null;
             state.writeDefaultValues = WriteDefaults;
             state.transitions = Transitions.Select(x => x.ToAnimatorStateTransition(container)).ToArray();
             var behaviours = Behaviours.Select(x => x.ToStateMachineBehaviour(container)).ToArray();

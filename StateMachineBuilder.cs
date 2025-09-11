@@ -26,7 +26,7 @@ internal sealed class StateMachineBuilder : IStateMachineItem
 
     public string Name { get; set; } = "";
     public bool DefaultWriteDefaults { get; set; } = true;
-    public Motion? DefaultMotion { get; set; }
+    public MotionBuilder? DefaultMotion { get; set; }
 
     public Vector2 EntryPosition { get; set; } = new(50, 120);
     public Vector2 AnyStatePosition { get; set; } = new(50, 20);
@@ -39,9 +39,21 @@ internal sealed class StateMachineBuilder : IStateMachineItem
         return this;
     }
 
-    public StateMachineBuilder WithDefaultMotion(Motion motion)
+    public StateMachineBuilder WithDefaultMotion(MotionBuilder motion)
     {
         DefaultMotion = motion;
+        return this;
+    }
+
+    public StateMachineBuilder WithDefaultMotion(BlendTree motion)
+    {
+        DefaultMotion = MotionBuilder.FromBlendTree(motion);
+        return this;
+    }
+
+    public StateMachineBuilder WithDefaultMotion(AnimationClip motion)
+    {
+        DefaultMotion = MotionBuilder.FromAnimationClip(motion);
         return this;
     }
 
