@@ -41,14 +41,22 @@ internal abstract class BlendTreeBuilder : MotionBuilder<BlendTree>
         if (Count == 0)
             return;
 
-        value.children = Children.OrderBy(x => x.Threshold ?? 0).Select((x, i) => 
-            new ChildMotion()
+        Children.Sort((x, y) => (x.Threshold ?? 0f).CompareTo(y.Threshold ?? 0));
+        var span = AsSpan(Children);
+        var children = new ChildMotion[span.Length];
+        for (int i = 0; i < children.Length; i++)
+        {
+            var x = span[i];
+            children[i] = new()
             {
                 directBlendParameter = x.DirectBlendParameter ?? DefaultDirectBlendParameter ?? "",
                 threshold = x.Threshold ?? DefaultThreshold ?? (Count < 2 ? 0 : (i / (Count - 1))),
                 position = x.Position ?? DefaultPosition ?? Vector2.zero,
                 motion = x.GetMotion().ToMotion(container)
-            }).ToArray();
+            };
+        }
+        
+        value.children = children;
     }
 
     protected abstract void ConfigureBlendTree(BlendTree value, IAssetContainer container);
@@ -76,6 +84,9 @@ internal abstract class BlendTreeBuilder : MotionBuilder<BlendTree>
         }
         writer.Indent--;
     }
+
+    protected static Span<T> AsSpan<T>(List<T> list) => Unsafe.As<Tuple<T[], int>>(list) is { } tuple ? tuple.Item1.AsSpan(0, tuple.Item2) : default;
+    protected static Span<(int HashCode, int Next, T Value)> AsSpan<T>(HashSet<T> hashSet) => Unsafe.As<Tuple<int[], ValueTuple<int, int, T>[]>>(hashSet) is { } tuple ? tuple.Item2.AsSpan() : default;
 }
 
 internal sealed class OneDirectionBlendTreeBuilder : BlendTreeBuilder
