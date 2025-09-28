@@ -8,11 +8,15 @@ internal sealed class AnimationClipBuilder : MotionBuilder<AnimationClip>
 {
     private static AnimationCurve? SharedAnimationCurve;
 
-    private readonly Dictionary<EditorCurveBinding, List<Keyframe>> keyframeMap = new();
+    private readonly Dictionary<EditorCurveBinding, SortedList<float, Keyframe>> keyframeMap = new();
 
     public IEnumerable<EditorCurveBinding> Bindings => keyframeMap.Keys;
 
     public bool IsLoop { get; set; } = false;
+
+    public float Length => keyframeMap.Values.Max(x => AsSpan(x)[^1].Time);
+
+    public Span<Keyframe> this[EditorCurveBinding binding] => keyframeMap.TryGetValue(binding, out var keyframe) ? AsSpan(keyframe) : default;
 
     public AnimationClipBuilder Add(EditorCurveBinding key, float time, float value)
     {
@@ -34,7 +38,7 @@ internal sealed class AnimationClipBuilder : MotionBuilder<AnimationClip>
             }
         }
 
-        list.Add(new(time, value));
+        list[time] = new(time, value);
         return this;
     }
 
@@ -42,6 +46,13 @@ internal sealed class AnimationClipBuilder : MotionBuilder<AnimationClip>
     {
         Add(new EditorCurveBinding() { path = "", propertyName = name, type = typeof(Animator) }, time, value);
         return this;
+    }
+
+    public float? Evaluate(EditorCurveBinding binding, float time)
+    {
+        if (!keyframeMap.TryGetValue(binding, out var keyframe))
+            return default;
+        return Evaluate(AsSpan(keyframe), time);
     }
 
     private static float Evaluate(ReadOnlySpan<Keyframe> sortedKeyframes, float time)
@@ -84,7 +95,7 @@ internal sealed class AnimationClipBuilder : MotionBuilder<AnimationClip>
         {
             foreach (var keyframe in keyframes)
             {
-                timesSet.Add(keyframe.Time);
+                timesSet.Add(keyframe.Key);
             }
         }
 
@@ -94,8 +105,6 @@ internal sealed class AnimationClipBuilder : MotionBuilder<AnimationClip>
 
         foreach (var (binding, keyframes) in map)
         {
-            if (keyframes.Count > 1)
-                keyframes.Sort((x, y) => x.Time.CompareTo(y.Time));
             for (int i = 0; i < keys.Length; i++)
             {
                 keys[i] = new UnityEngine.Keyframe(times[i], Evaluate(AsSpan(keyframes), times[i]));
@@ -121,6 +130,12 @@ internal sealed class AnimationClipBuilder : MotionBuilder<AnimationClip>
         return tuple.Item1.AsSpan(0, tuple.Item2);
     }
 
+    private static Span<TValue> AsSpan<TKey, TValue>(SortedList<TKey, TValue> list)
+    {
+        var array = Unsafe.As<Tuple<TKey[], TValue[]>>(list).Item2;
+        return array.AsSpan(0, list.Count);
+    }
+
     private static void SetEditorCurveNoSync(AnimationClip clip, EditorCurveBinding binding, AnimationCurve curve)
     {
         _Internal_SetEditorCurve?.Invoke(clip, binding, curve, false);
@@ -144,7 +159,7 @@ internal sealed class AnimationClipBuilder : MotionBuilder<AnimationClip>
         return (valueEnd - valueStart) / (timeEnd - timeStart);
     }
 
-    private struct Keyframe
+    public struct Keyframe
     {
         public float Time;
         public float Value;
