@@ -62,7 +62,12 @@ internal abstract class MotionBuilder<T> : MotionBuilder where T : Motion
 
 internal abstract class ChildMotionBuilder
 {
-    internal abstract MotionBuilder GetMotion();
+    public MotionBuilder Motion { get; }
+
+    protected ChildMotionBuilder(MotionBuilder motion)
+    {
+        Motion = motion;
+    }
 
     public float? Threshold { get; set; }
     public Vector2? Position { get; set; }
@@ -71,14 +76,11 @@ internal abstract class ChildMotionBuilder
 
 internal sealed class ChildMotionBuilder<T> : ChildMotionBuilder where T : MotionBuilder
 {
-    public ChildMotionBuilder(T motion)
+    public ChildMotionBuilder(T motion) : base(motion)
     {
-        Motion = motion;
     }
 
-    public T Motion { get; }
-
-    internal override MotionBuilder GetMotion() => Motion;
+    public new T Motion => (base.Motion as T)!;
 
     public static implicit operator T(ChildMotionBuilder<T> builder) => builder.Motion;
 }

@@ -52,7 +52,7 @@ internal abstract class BlendTreeBuilder : MotionBuilder<BlendTree>
                 directBlendParameter = x.DirectBlendParameter ?? DefaultDirectBlendParameter ?? "",
                 threshold = x.Threshold ?? DefaultThreshold ?? (Count < 2 ? 0 : (i / (Count - 1))),
                 position = x.Position ?? DefaultPosition ?? Vector2.zero,
-                motion = x.GetMotion().ToMotion(container)
+                motion = x.Motion.ToMotion(container)
             };
         }
         
@@ -76,7 +76,7 @@ internal abstract class BlendTreeBuilder : MotionBuilder<BlendTree>
         writer.Indent++;
         foreach (var item in Children)
         {
-            var motion = item.GetMotion();
+            var motion = item.Motion;
             if (motion is BlendTreeBuilder b)
                 b.ToString(writer);
             else
