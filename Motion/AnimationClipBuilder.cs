@@ -14,7 +14,7 @@ internal sealed class AnimationClipBuilder : MotionBuilder<AnimationClip>
 
     public bool IsLoop { get; set; } = false;
 
-    public float Length => keyframeMap.Values.Max(x => AsSpan(x)[^1].Time);
+    public float Length => keyframeMap.Count == 0 ? 0 : keyframeMap.Values.Max(x => AsSpan(x)[^1].Time);
 
     public Span<Keyframe> this[EditorCurveBinding binding] => keyframeMap.TryGetValue(binding, out var keyframe) ? AsSpan(keyframe) : default;
 
