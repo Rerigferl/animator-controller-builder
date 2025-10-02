@@ -1,9 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿namespace Numeira.Animation;
 
-namespace Numeira.Animation;
-
-internal abstract class MotionBuilder
+public abstract class MotionBuilder
 {
     public virtual string Name { get; set; } = "";
 
@@ -40,7 +37,7 @@ internal abstract class MotionBuilder
     }
 }
 
-internal abstract class MotionBuilder<T> : MotionBuilder where T : Motion
+public abstract class MotionBuilder<T> : MotionBuilder where T : Motion
 {
     protected abstract T CreateInstance();
 
@@ -60,7 +57,7 @@ internal abstract class MotionBuilder<T> : MotionBuilder where T : Motion
     protected abstract void ConfigureMotion(T value, IAssetContainer container);
 }
 
-internal abstract class ChildMotionBuilder
+public abstract class ChildMotionBuilder
 {
     public MotionBuilder Motion { get; }
 
@@ -74,7 +71,7 @@ internal abstract class ChildMotionBuilder
     public string? DirectBlendParameter { get; set; }
 }
 
-internal sealed class ChildMotionBuilder<T> : ChildMotionBuilder where T : MotionBuilder
+public sealed class ChildMotionBuilder<T> : ChildMotionBuilder where T : MotionBuilder
 {
     public ChildMotionBuilder(T motion) : base(motion)
     {
@@ -85,7 +82,7 @@ internal sealed class ChildMotionBuilder<T> : ChildMotionBuilder where T : Motio
     public static implicit operator T(ChildMotionBuilder<T> builder) => builder.Motion;
 }
 
-internal static partial class MotionBuilderExt
+public static partial class MotionBuilderExt
 {
     public static T WithName<T>(this T motion, string name) where T : MotionBuilder
     {

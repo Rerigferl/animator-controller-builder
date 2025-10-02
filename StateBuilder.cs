@@ -1,6 +1,6 @@
 ﻿namespace Numeira.Animation;
 
-internal sealed class StateBuilder : IStateMachineItem
+public sealed class StateBuilder : IStateMachineItem
 {
     public string Name { get; set; } = "";
     public Vector2? Position { get; set; }
@@ -52,4 +52,4 @@ internal sealed class StateBuilder : IStateMachineItem
     }
 }
 
-internal static partial class StateBuilderExt { }
+public static partial class StateBuilderExt { }

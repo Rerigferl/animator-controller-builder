@@ -1,5 +1,4 @@
 ﻿#if VRC_SDK_VRCSDK3
-using VRC.SDKBase;
 using AvatarParameterDriver = VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver;
 using AvatarParameterDriverParameter = VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver.Parameter;
 using ChangeType = VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver.ChangeType;
@@ -8,7 +7,7 @@ using ChangeType = VRC.SDK3.Avatars.Components.VRCAvatarParameterDriver.ChangeTy
 namespace Numeira.Animation;
 
 #if !VRC_SDK_VRCSDK3
-internal sealed class AvatarParameterDriverParameter
+public sealed class AvatarParameterDriverParameter
 {
     public ChangeType type;
     public string? name;
@@ -26,7 +25,7 @@ internal sealed class AvatarParameterDriverParameter
     public object? destParam;
 }
 
-internal enum ChangeType
+public enum ChangeType
 {
     Set,
     Add,
@@ -35,7 +34,7 @@ internal enum ChangeType
 }
 #endif
 
-internal sealed class AvatarParameterDriverBuilder
+public sealed class AvatarParameterDriverBuilder
 #if VRC_SDK_VRCSDK3
     : StateMachineBehaviourBuilder
 #endif

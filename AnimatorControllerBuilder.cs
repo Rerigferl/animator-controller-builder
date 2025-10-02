@@ -1,6 +1,6 @@
 ﻿namespace Numeira.Animation;
 
-internal sealed class AnimatorControllerBuilder
+public sealed class AnimatorControllerBuilder
 {
     public string Name { get; set; } = "";
 
@@ -21,8 +21,10 @@ internal sealed class AnimatorControllerBuilder
         return this;
     }
 
-    public AnimatorController ToAnimatorController(IAssetContainer container)
+    public AnimatorController ToAnimatorController(IAssetContainer? container = null)
     {
+        container ??= AssetContainer.Current;
+
         if (!container.TryGetValue(this, out AnimatorController? controller))
         {
             controller = new AnimatorController();
@@ -32,32 +34,6 @@ internal sealed class AnimatorControllerBuilder
             controller.layers = Layers.Select(layer => layer.ToAnimatorControllerLayer(container)).ToArray();
         }
         return controller;
-    }
-
-    public AnimatorController ToAnimatorController(AnimatorController baseAnimatorController, IAssetContainer container)
-    {
-        AnimatorControllerLayer[] layers; 
-        if (!container.TryGetValue(this, out AnimatorController? controller))
-        {
-            controller = new AnimatorController();
-            container.Register(this, controller);
-            controller.name = Name;
-            controller.parameters = Parameters.ToArray();
-            layers = Layers.Select(layer => layer.ToAnimatorControllerLayer(container)).ToArray();
-            controller.layers = layers;
-        }
-        else
-        {
-            layers = controller.layers;
-        }
-
-        var baseLayers = baseAnimatorController.layers;
-        int count = baseLayers.Length;
-        Array.Resize(ref baseLayers, count + layers.Length);
-        layers.AsSpan().CopyTo(baseLayers.AsSpan(count));
-
-        baseAnimatorController.layers = baseLayers;
-        return baseAnimatorController;
     }
 
     private sealed class NameEqualityComparer : IEqualityComparer<AnimatorControllerParameter>
@@ -70,7 +46,7 @@ internal sealed class AnimatorControllerBuilder
     }
 }
 
-internal static partial class AnimatorControllerBuilderExt
+public static partial class AnimatorControllerBuilderExt
 {
     private static HashSet<AnimatorControllerParameter> AddParameter(this HashSet<AnimatorControllerParameter> parameters, AnimatorControllerParameter parameter)
     {
@@ -78,7 +54,7 @@ internal static partial class AnimatorControllerBuilderExt
         return parameters;
     }
 
-    public static HashSet<AnimatorControllerParameter> AddInt(this HashSet<AnimatorControllerParameter> parameters, string name, int defaultValue = 0) 
+    public static HashSet<AnimatorControllerParameter> AddInt(this HashSet<AnimatorControllerParameter> parameters, string name, int defaultValue = 0)
         => parameters.AddParameter(new() { name = name, type = AnimatorControllerParameterType.Int, defaultInt = defaultValue });
 
     public static HashSet<AnimatorControllerParameter> AddFloat(this HashSet<AnimatorControllerParameter> parameters, string name, float defaultValue = 0)

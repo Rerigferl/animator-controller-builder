@@ -1,5 +1,5 @@
 ﻿namespace Numeira.Animation;
 
-internal interface IStateMachineItem
+public interface IStateMachineItem
 {
 }

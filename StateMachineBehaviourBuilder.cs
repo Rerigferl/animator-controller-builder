@@ -2,7 +2,7 @@
 
 namespace Numeira.Animation;
 
-internal abstract class StateMachineBehaviourBuilder
+public abstract class StateMachineBehaviourBuilder
 {
     static StateMachineBehaviourBuilder()
     {

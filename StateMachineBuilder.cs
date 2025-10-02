@@ -1,6 +1,6 @@
 ﻿namespace Numeira.Animation;
 
-internal sealed class StateMachineBuilder : IStateMachineItem
+public sealed class StateMachineBuilder : IStateMachineItem
 {
     public StateMachineBuilder() { }
     public StateMachineBuilder(StateMachineBuilder parent) : this()
@@ -128,7 +128,7 @@ internal sealed class StateMachineBuilder : IStateMachineItem
             if ((_anyStateTransitions?.Count ?? 0) != 0)
                 stateMachine.anyStateTransitions = AnyStateTransitions.Select(x => x.ToAnimatorStateTransition(container)).ToArray();
 
-            if (_stateMachines is {} stateMachines)
+            if (_stateMachines is { } stateMachines)
             {
                 foreach (var x in stateMachines)
                 {

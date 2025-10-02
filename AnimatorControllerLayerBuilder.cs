@@ -1,7 +1,7 @@
 ﻿
 namespace Numeira.Animation;
 
-internal sealed class AnimatorControllerLayerBuilder
+public sealed class AnimatorControllerLayerBuilder
 {
     public AnimatorControllerLayerBuilder()
     {

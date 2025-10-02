@@ -2,9 +2,11 @@
 
 namespace Numeira.Animation;
 
-internal sealed class AssetContainer : IAssetContainer
+public sealed class AssetContainer : IAssetContainer
 {
     public static IAssetContainer Empty { get; } = new NullAssetContainer();
+
+    public static IAssetContainer Current { get; set; } = new AssetContainer();
 
     public Dictionary<object, object> Items { get; } = new();
 
@@ -39,7 +41,7 @@ internal sealed class AssetContainer : IAssetContainer
 }
 
 
-internal interface IAssetContainer
+public interface IAssetContainer
 {
     public void Register(object key, object value);
 

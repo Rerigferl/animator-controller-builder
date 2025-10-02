@@ -5,28 +5,28 @@ using VRCTrackingType = VRC.SDK3.Avatars.Components.VRCAnimatorTrackingControl.T
 
 namespace Numeira.Animation;
 
-internal enum TrackingType
+public enum TrackingType
 {
     NoChange,
     Tracking,
     Animation
 }
 
-internal sealed class AnimatorTrackingControlBuilder
+public sealed class AnimatorTrackingControlBuilder
 #if VRC_SDK_VRCSDK3 
     : StateMachineBehaviourBuilder
 #endif
 {
     public TrackingType Head { get; set; } = TrackingType.NoChange;
-    public TrackingType LeftHand { get; set;} = TrackingType.NoChange;
-    public TrackingType RightHand { get; set;} = TrackingType.NoChange;
-    public TrackingType Hip { get; set;} = TrackingType.NoChange;
-    public TrackingType LeftFoot { get; set;} = TrackingType.NoChange;
-    public TrackingType RightFoot { get; set;} = TrackingType.NoChange;
-    public TrackingType LeftFingers { get; set;} = TrackingType.NoChange;
-    public TrackingType RightFingers { get; set;} = TrackingType.NoChange;
-    public TrackingType Eyes { get; set;} = TrackingType.NoChange;
-    public TrackingType Mouth { get; set;} = TrackingType.NoChange;
+    public TrackingType LeftHand { get; set; } = TrackingType.NoChange;
+    public TrackingType RightHand { get; set; } = TrackingType.NoChange;
+    public TrackingType Hip { get; set; } = TrackingType.NoChange;
+    public TrackingType LeftFoot { get; set; } = TrackingType.NoChange;
+    public TrackingType RightFoot { get; set; } = TrackingType.NoChange;
+    public TrackingType LeftFingers { get; set; } = TrackingType.NoChange;
+    public TrackingType RightFingers { get; set; } = TrackingType.NoChange;
+    public TrackingType Eyes { get; set; } = TrackingType.NoChange;
+    public TrackingType Mouth { get; set; } = TrackingType.NoChange;
 
 #if VRC_SDK_VRCSDK3
     protected override StateMachineBehaviour CreateInstance() => ScriptableObject.CreateInstance<VRCAnimatorTrackingControl>();

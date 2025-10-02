@@ -1,6 +1,6 @@
 ﻿namespace Numeira.Animation;
 
-internal sealed class TransitionBuilder
+public sealed class TransitionBuilder
 {
     public TransitionBuilder(bool isExitTransition = false)
     {
@@ -84,7 +84,7 @@ internal sealed class TransitionBuilder
     }
 }
 
-internal static partial class TransitionBuilderExt
+public static partial class TransitionBuilderExt
 {
     public static TransitionBuilder If(this TransitionBuilder transition, string parameter) => transition.AddCondition(AnimatorConditionMode.If, parameter, 0);
 

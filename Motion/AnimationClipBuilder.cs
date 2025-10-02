@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Numeira.Animation;
 
-internal sealed class AnimationClipBuilder : MotionBuilder<AnimationClip>
+public sealed class AnimationClipBuilder : MotionBuilder<AnimationClip>
 {
     private static AnimationCurve? SharedAnimationCurve;
 

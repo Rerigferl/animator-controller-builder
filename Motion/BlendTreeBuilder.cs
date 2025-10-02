@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Numeira.Animation;
 
-internal abstract class BlendTreeBuilder : MotionBuilder<BlendTree>
+public abstract class BlendTreeBuilder : MotionBuilder<BlendTree>
 {
     public abstract BlendTreeType Type { get; }
 
@@ -55,7 +55,7 @@ internal abstract class BlendTreeBuilder : MotionBuilder<BlendTree>
                 motion = x.Motion.ToMotion(container)
             };
         }
-        
+
         value.children = children;
     }
 
@@ -89,7 +89,7 @@ internal abstract class BlendTreeBuilder : MotionBuilder<BlendTree>
     protected static Span<(int HashCode, int Next, T Value)> AsSpan<T>(HashSet<T> hashSet) => Unsafe.As<Tuple<int[], ValueTuple<int, int, T>[]>>(hashSet) is { } tuple ? tuple.Item2.AsSpan() : default;
 }
 
-internal sealed class OneDirectionBlendTreeBuilder : BlendTreeBuilder
+public sealed class OneDirectionBlendTreeBuilder : BlendTreeBuilder
 {
     public override BlendTreeType Type => BlendTreeType.Simple1D;
 
@@ -101,7 +101,7 @@ internal sealed class OneDirectionBlendTreeBuilder : BlendTreeBuilder
     }
 }
 
-internal sealed class TwoDirectionBlendTreeBuilder : BlendTreeBuilder
+public sealed class TwoDirectionBlendTreeBuilder : BlendTreeBuilder
 {
     public override BlendTreeType Type => (IsFreeform, IsCertein) switch
     {
@@ -122,7 +122,7 @@ internal sealed class TwoDirectionBlendTreeBuilder : BlendTreeBuilder
     }
 }
 
-internal sealed partial class DirectBlendTreeBuilder : BlendTreeBuilder
+public sealed partial class DirectBlendTreeBuilder : BlendTreeBuilder
 {
     public override BlendTreeType Type => BlendTreeType.Direct;
 
@@ -130,7 +130,8 @@ internal sealed partial class DirectBlendTreeBuilder : BlendTreeBuilder
 
     protected override void ConfigureBlendTree(BlendTree value, IAssetContainer container)
     {
-        SetNormalizedBlendValues(value, NormalizedBlendValues);
+        if (NormalizedBlendValues)
+            SetNormalizedBlendValues(value, NormalizedBlendValues);
     }
 
     private static void SetNormalizedBlendValues(BlendTree blendTree, bool value)
@@ -185,8 +186,6 @@ internal sealed partial class DirectBlendTreeBuilder : BlendTreeBuilder
     }
 }
 
-internal interface IAppendableBlendTree { }
-
 static partial class MotionBuilderExt
 {
     private static ChildMotionBuilder<R> AddMotion<T, R>(this T blendTree, R item) where T : BlendTreeBuilder where R : MotionBuilder
@@ -197,15 +196,15 @@ static partial class MotionBuilderExt
         return blendTree.Append(item);
     }
 
-    public static ChildMotionBuilder AddMotion<T>(this T blendTree, AnimationClip motion) where T : BlendTreeBuilder 
+    public static ChildMotionBuilder AddMotion<T>(this T blendTree, AnimationClip motion) where T : BlendTreeBuilder
         => blendTree.AddMotion(MotionBuilder.FromAnimationClip(motion));
 
-    public static ChildMotionBuilder<OneDirectionBlendTreeBuilder> AddBlendTree<T>(this T blendTree, string? name = null) where T : BlendTreeBuilder 
+    public static ChildMotionBuilder<OneDirectionBlendTreeBuilder> AddBlendTree<T>(this T blendTree, string? name = null) where T : BlendTreeBuilder
         => blendTree.AddMotion(new OneDirectionBlendTreeBuilder() { Name = name ?? "" });
 
     public static ChildMotionBuilder<DirectBlendTreeBuilder> AddDirectBlendTree<T>(this T blendTree, string? name = null) where T : BlendTreeBuilder
         => blendTree.AddMotion(new DirectBlendTreeBuilder() { Name = name ?? "" });
 
-    public static ChildMotionBuilder<AnimationClipBuilder> AddAnimationClip<T>(this T blendTree, string? name = null) where T : BlendTreeBuilder 
+    public static ChildMotionBuilder<AnimationClipBuilder> AddAnimationClip<T>(this T blendTree, string? name = null) where T : BlendTreeBuilder
         => blendTree.AddMotion(new AnimationClipBuilder() { Name = name ?? "" });
 }
